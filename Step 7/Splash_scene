@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+
+# Created by: Roman Cernetchi
+# Created on: January 2021
+# This is program renders a sprite on Pybadge
+
+import ugame
+import stage
+import time
+import random
+import constants
+
+
+def splash_scene():
+    # This function is the splash scene
+    
+    # switch with wave sound once done
+    coin_sound = open("coin.wav", 'rb')
+    sound = ugame.audio
+    sound.stop()
+    sound.mute(False)
+    sound.play(coin_sound)
+
+    image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
+
+    background = stage.Grid(image_bank_mt_background, constants.SCREEN_X,
+                            constants.SCREEN_Y)
+
+    background.tile(2, 2, 0)
+    background.tile(3, 2, 1)
+    background.tile(6, 5, 0)
+    background.tile(7, 5, 0)
+
+    game = stage.Stage(ugame.display, constants.FPS)
+    game.layers = [background]
+    game.render_block()
+
+    while True:
+        # get user input
+        time.sleep(2.0)
+        menu_scene()
+
+        # Start button pressed
+        if keys & ugame.K_START != 0:
+            game_scene()
+
+        # update game logic
+        game.tick()
+
+def menu_scene():
+    # This function is the menu
+    image_bank_mt_background = stage.Bank.from_bmp16("mt_game_studio.bmp")
+
+    # Text boxes
+    text = []
+    text1 = stage.Text(width=29, height=12, font=None, palette=constants.BLUE_PALETTE, buffer=None)
+    text1.move(20, 10)
+    text1.text("MT Game Studios")
+    text.append(text1)
+
+    text2 = stage.Text(width=29, height=12, font=None, palette=constants.BLUE_PALETTE, buffer=None)
+    text2.move(40, 110)
+    text2.text("PRESS START")
+    text.append(text2)
+
+    background = stage.Grid(image_bank_mt_background, constants.SCREEN_X,
+                            constants.SCREEN_Y)
+
+    game = stage.Stage(ugame.display, constants.FPS)
+    game.layers = text + [background]
+    game.render_block()
+
+    while True:
+        # get user input
+        keys = ugame.buttons.get_pressed()
+
+        # Start button pressed
+        if keys & ugame.K_START != 0:
+            game_scene()
+
+        # update game logic
+        game.tick()
+
+def game_scene():
+    # this function shows sprites on Pybadge
+
+    image_bank_background = stage.Bank.from_bmp16("background.bmp")
+    image_bank_sprites = stage.Bank.from_bmp16("background.bmp")
+
+    a_button = constants.button_state["button_up"]
+    b_button = constants.button_state["button_up"]
+    start_button = constants.button_state["button_up"]
+    select_button = constants.button_state["button_up"]
+    
+    background = stage.Grid(image_bank_background, 10, 8)
+    
+    boat = stage.Sprite(image_bank_sprites, 3, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE))
+
+    rock = stage.Sprite(image_bank_sprites, 9,
+                    int(constants.SCREEN_X / 2 - constants.SPRITE_SIZE / 2),
+                    16)
+
+    game = stage.Stage(ugame.display, 60)
+    game.layers = [boat] + [background] + [rock]
+    game.render_block()
+
+    while True:
+        # get user input
+        keys = ugame.buttons.get_pressed()
+        
+        if keys & ugame.K_X != 0:
+            pass
+        if keys & ugame.K_O != 0:
+            pass
+        if keys & ugame.K_START != 0:
+            pass
+        if keys & ugame.K_SELECT != 0:
+            pass
+
+        if keys & ugame.K_RIGHT != 0:
+            if boat.x < (constants.SCREEN_X - constants.SPRITE_SIZE):
+                boat.move((boat.x + constants.SPRITE_MOVEMENT_SPEED), boat.y)
+            else:
+                boat.move((constants.SCREEN_X + constants.SPRITE_SIZE), boat.y)
+
+        if keys & ugame.K_LEFT != 0:
+            if boat.x > 0:
+                boat.move((boat.x - constants.SPRITE_MOVEMENT_SPEED), boat.y)
+            else:
+                boat.move(0, boat.y)
+
+        if keys & ugame.K_UP != 0:
+            pass
+        if keys & ugame.K_DOWN != 0:
+            pass
+
+        # update game logic
+        
+        # redraw Sprites
+        game.render_sprites([boat] + [rock])
+        game.tick()
+
+
+if __name__ == "__main__":
+    splash_scene()

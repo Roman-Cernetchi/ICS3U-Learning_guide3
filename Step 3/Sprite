@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+# Created by: Roman Cernetchi
+# Created on: January 2021
+# This is program renders a sprite on Pybadge
+
+import ugame
+import stage
+
+
+def game_scene():
+    # this function shows hello world on Pybadge
+
+    image_bank_background = stage.Bank.from_bmp16("background.bmp")
+    image_bank_sprites = stage.Bank.from_bmp16("background.bmp")
+    
+    background = stage.Grid(image_bank_background, 10, 8)
+    
+    boat = stage.Sprite(image_bank_sprites, 3, 75, 75)
+
+    game = stage.Stage(ugame.display, 60)
+    game.layers = [boat] + [background]
+    game.render_block()
+
+    while True:
+        # redraw Sprites
+        game.render_sprites([boat])
+        game.tick()
+
+
+if __name__ == "__main__":
+    game_scene()
